@@ -38,7 +38,7 @@ defmodule NodeToNerves.Mixfile do
   end
   def application(_target) do
     [mod: {NodeToNerves.Application, []},
-     extra_applications: [:logger]]
+     extra_applications: [:logger, :nerves_network]]
   end
 
   # Dependencies can be Hex packages:
@@ -56,11 +56,15 @@ defmodule NodeToNerves.Mixfile do
   end
 
   # Specify target specific dependencies
-  def deps("host"), do: []
+  def deps("host"), do: [
+    {:nerves_dht, git: "https://github.com/visciang/nerves_dht.git", tag: "1.1.2"}
+  ]
   def deps(target) do
     [
       {:bootloader, "~> 0.1"},
-      {:nerves_runtime, "~> 0.4"}
+      {:nerves_runtime, "~> 0.4"},
+      {:nerves_dht, git: "https://github.com/visciang/nerves_dht.git", tag: "1.1.2"},
+      {:nerves_network, "~> 0.3.4"}
     ] ++ system(target)
   end
 
