@@ -16,7 +16,7 @@ use Mix.Config
 # Use bootloader to start the main application. See the bootloader
 # docs for separating out critical OTP applications such as those
 # involved with firmware updates.
-config :bootloader,
+config :shoehorn,
   init: [:nerves_runtime, :nerves_network, :nerves_firmware_ssh],
   app: :node_to_nerves
 

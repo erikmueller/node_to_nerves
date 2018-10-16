@@ -14,14 +14,21 @@ defmodule NodeToNerves.Mixfile do
      version: "0.1.0",
      elixir: "~> 1.4",
      target: @target,
-     archives: [nerves_bootstrap: "~> 0.6"],
+     archives: [nerves_bootstrap: "~> 1.3.1"],
      deps_path: "deps/#{@target}",
      build_path: "_build/#{@target}",
      lockfile: "mix.lock.#{@target}",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases(@target),
+     aliases: [loadconfig: [&bootstrap/1]],
      deps: deps()]
+  end
+
+  # Starting nerves_bootstrap pulls in the Nerves hooks to mix, but only
+  # if the MIX_TARGET environment variable is set.
+  defp bootstrap(args) do
+    Application.start(:nerves_bootstrap)
+    Mix.Task.run("loadconfig", args)
   end
 
   # Configuration for the OTP application.
@@ -52,7 +59,7 @@ defmodule NodeToNerves.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   def deps do
-    [{:nerves, "~> 0.7", runtime: false}] ++
+    [{:nerves, "~> 1.3.1", runtime: false}] ++
     deps(@target)
   end
 
@@ -65,7 +72,7 @@ defmodule NodeToNerves.Mixfile do
 
   def deps(target) do
     [
-      {:bootloader, "~> 0.1"},
+      {:shoehorn, "~> 0.4"},
       {:nerves_runtime, "~> 0.4"},
       {:nerves_dht, git: "https://github.com/visciang/nerves_dht.git", tag: "1.1.2"},
       {:nerves_network, "~> 0.3.4"},
